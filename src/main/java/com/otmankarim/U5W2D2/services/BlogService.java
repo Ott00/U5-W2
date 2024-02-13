@@ -12,7 +12,7 @@ import java.util.Random;
 public class BlogService {
     private List<Blog> blogs = new ArrayList<>();
 
-    public List<Blog> getUsers() {
+    public List<Blog> getBlogs() {
         return this.blogs;
     }
 

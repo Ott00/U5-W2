@@ -15,8 +15,8 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping
-    public List<Blog> getAllUsers() {
-        return this.blogService.getUsers();
+    public List<Blog> getAllBlogs() {
+        return this.blogService.getBlogs();
     }
 
     @PostMapping

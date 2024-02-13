@@ -12,7 +12,7 @@ import java.util.Random;
 public class AuthorService {
     private List<Author> authors = new ArrayList<>();
 
-    public List<Author> getUsers() {
+    public List<Author> getAuthors() {
         return this.authors;
     }
 

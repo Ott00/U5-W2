@@ -15,8 +15,8 @@ public class AuthorController {
     private AuthorService authorService;
 
     @GetMapping
-    public List<Author> getAllUsers() {
-        return this.authorService.getUsers();
+    public List<Author> getAllAuthors() {
+        return this.authorService.getAuthors();
     }
 
     @PostMapping
