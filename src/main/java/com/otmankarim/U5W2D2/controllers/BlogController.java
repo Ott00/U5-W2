@@ -36,8 +36,8 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) // Status Code 204
-    public void findByIdAndDelete(@PathVariable int id) {
-        this.blogService.findByIdAndDelete(id);
+//    @ResponseStatus(HttpStatus.NO_CONTENT) // Status Code 204
+    public String findByIdAndDelete(@PathVariable int id) {
+        return this.blogService.findByIdAndDelete(id) ? "Elemento rimosso" : "Elemento non trovato";
     }
 }

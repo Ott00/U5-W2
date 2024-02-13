@@ -5,7 +5,6 @@ import com.otmankarim.U5W2D2.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -51,13 +50,15 @@ public class BlogService {
         else return found;
     }
 
-    public void findByIdAndDelete(int id) {
-        Iterator<Blog> iterator = this.blogs.iterator();
-        while (iterator.hasNext()) {
-            Blog current = iterator.next();
-            if (current.getId() == id) {
-                iterator.remove();
-            }
-        }
+    public boolean findByIdAndDelete(int id) {
+        return this.blogs.removeIf(current -> current.getId() == id);
+
+//        Iterator<Blog> iterator = this.blogs.iterator();
+//        while (iterator.hasNext()) {
+//            Blog current = iterator.next();
+//            if (current.getId() == id) {
+//                iterator.remove();
+//            }
+//        }
     }
 }
