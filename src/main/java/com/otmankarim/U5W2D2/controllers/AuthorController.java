@@ -3,10 +3,9 @@ package com.otmankarim.U5W2D2.controllers;
 import com.otmankarim.U5W2D2.entities.Author;
 import com.otmankarim.U5W2D2.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
@@ -15,8 +14,10 @@ public class AuthorController {
     private AuthorService authorService;
 
     @GetMapping
-    public List<Author> getAllAuthors() {
-        return this.authorService.getAuthors();
+    public Page<Author> getAllAuthors(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(defaultValue = "id") String orderBy) {
+        return this.authorService.getAuthors(page, size, orderBy);
     }
 
     @PostMapping
@@ -36,7 +37,8 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public String findByIdAndDelete(@PathVariable int id) {
-        return this.authorService.findByIdAndDelete(id) ? "Elemento rimosso" : "Elemento non trovato";
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Status Code 204
+    public void findByIdAndDelete(@PathVariable int id) {
+        this.authorService.findByIdAndDelete(id);
     }
 }

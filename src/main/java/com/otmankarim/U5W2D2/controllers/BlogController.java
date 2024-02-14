@@ -1,12 +1,12 @@
 package com.otmankarim.U5W2D2.controllers;
 
 import com.otmankarim.U5W2D2.entities.Blog;
+import com.otmankarim.U5W2D2.payloads.BlogPayload;
 import com.otmankarim.U5W2D2.services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/blogs")
@@ -15,14 +15,16 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping
-    public List<Blog> getAllBlogs() {
-        return this.blogService.getBlogs();
+    public Page<Blog> getAllBlogs(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "id") String orderBy) {
+        return this.blogService.getBlogs(page, size, orderBy);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Status Code 201
-    public Blog save(@RequestBody Blog blog) {
-        return this.blogService.save(blog);
+    public Blog save(@RequestBody BlogPayload blogPayload) {
+        return this.blogService.save(blogPayload);
     }
 
     @GetMapping("/{id}")
@@ -36,8 +38,8 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT) // Status Code 204
-    public String findByIdAndDelete(@PathVariable int id) {
-        return this.blogService.findByIdAndDelete(id) ? "Elemento rimosso" : "Elemento non trovato";
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Status Code 204
+    public void findByIdAndDelete(@PathVariable int id) {
+        this.blogService.findByIdAndDelete(id);
     }
 }
