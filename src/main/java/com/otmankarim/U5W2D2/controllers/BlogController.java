@@ -33,7 +33,7 @@ public class BlogController {
     }
 
     @PutMapping("/{id}")
-    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody Blog updatedBlog) {
+    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody BlogPayload updatedBlog) {
         return this.blogService.findByIdAndUpdate(id, updatedBlog);
     }
 

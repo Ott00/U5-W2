@@ -28,6 +28,7 @@ public class BlogService {
     public Blog save(BlogPayload blogPayload) {
         //LOGICA PAYLOAD
         blogDAO.findByTitle(blogPayload.getTitle()).ifPresent(blog -> {
+            System.out.println(blog);
             throw new BadRequestException("Il blogpost '" + blogPayload.getTitle() + "' esiste già!");
         });
         Blog blog = new Blog(
@@ -45,13 +46,14 @@ public class BlogService {
         return blogDAO.findById(blogId).orElseThrow(() -> new NotFoundException(blogId));
     }
 
-    public Blog findByIdAndUpdate(int blogId, Blog updatedBlog) {
+    public Blog findByIdAndUpdate(int blogId, BlogPayload updatedBlog) {
         Blog found = this.findById(blogId);
         found.setCategory(updatedBlog.getCategory());
         found.setTitle(updatedBlog.getTitle());
         found.setCover(updatedBlog.getCover());
         found.setContent(updatedBlog.getContent());
         found.setTimeOfLecture(updatedBlog.getTimeOfLecture());
+        found.setAuthor(authorService.findById(updatedBlog.getAuthorId()));
         return blogDAO.save(found);
     }
 
