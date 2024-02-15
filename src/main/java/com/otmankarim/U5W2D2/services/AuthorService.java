@@ -3,6 +3,7 @@ package com.otmankarim.U5W2D2.services;
 import com.otmankarim.U5W2D2.entities.Author;
 import com.otmankarim.U5W2D2.exceptions.BadRequestException;
 import com.otmankarim.U5W2D2.exceptions.NotFoundException;
+import com.otmankarim.U5W2D2.payloads.NewAuthorDTO;
 import com.otmankarim.U5W2D2.repositories.AuthorDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,25 +23,30 @@ public class AuthorService {
         return authorDAO.findAll(pageable);
     }
 
-    public Author save(Author newAuthor) {
-        authorDAO.findByEmail(newAuthor.getEmail()).ifPresent(author -> {
-            throw new BadRequestException("L'email " + author.getEmail() + " è già in uso!");
+    public Author save(NewAuthorDTO newAuthorPayload) {
+        authorDAO.findByEmail(newAuthorPayload.email()).ifPresent(author -> {
+            throw new BadRequestException("L'email " + newAuthorPayload.email() + " è già in uso!");
         });
-        newAuthor.setAvatar(createAvatarUrl(newAuthor));
-        return authorDAO.save(newAuthor);
+        Author author = new Author(
+                newAuthorPayload.name(),
+                newAuthorPayload.surname(),
+                newAuthorPayload.email(),
+                newAuthorPayload.dateOfBirth()
+        );
+        author.setAvatar(createAvatarUrl(newAuthorPayload));
+        return authorDAO.save(author);
     }
 
     public Author findById(int authorId) {
         return authorDAO.findById(authorId).orElseThrow(() -> new NotFoundException(authorId));
     }
 
-    public Author findByIdAndUpdate(int authorId, Author updatedAuthor) {
+    public Author findByIdAndUpdate(int authorId, NewAuthorDTO updatedAuthor) {
         Author found = this.findById(authorId);
-        found.setName(updatedAuthor.getName());
-        found.setSurname(updatedAuthor.getSurname());
-        found.setEmail(updatedAuthor.getEmail());
-        found.setDateOfBirth(updatedAuthor.getDateOfBirth());
-        found.setAvatar(createAvatarUrl(found));
+        found.setName(updatedAuthor.name());
+        found.setSurname(updatedAuthor.surname());
+        found.setEmail(updatedAuthor.email());
+        found.setDateOfBirth(updatedAuthor.dateOfBirth());
         return authorDAO.save(found);
     }
 
@@ -49,7 +55,7 @@ public class AuthorService {
         authorDAO.delete(found);
     }
 
-    public String createAvatarUrl(Author author) {
-        return "https://ui-avatars.com/api/?name=" + author.getName() + "+" + author.getSurname();
+    public String createAvatarUrl(NewAuthorDTO author) {
+        return "https://ui-avatars.com/api/?name=" + author.name() + "+" + author.surname();
     }
 }

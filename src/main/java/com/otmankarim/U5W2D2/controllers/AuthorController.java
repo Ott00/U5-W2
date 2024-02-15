@@ -1,10 +1,14 @@
 package com.otmankarim.U5W2D2.controllers;
 
 import com.otmankarim.U5W2D2.entities.Author;
+import com.otmankarim.U5W2D2.exceptions.BadRequestException;
+import com.otmankarim.U5W2D2.payloads.NewAuthorDTO;
 import com.otmankarim.U5W2D2.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +26,11 @@ public class AuthorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Status Code 201
-    public Author save(@RequestBody Author author) {
-        return this.authorService.save(author);
+    public Author save(@RequestBody @Validated NewAuthorDTO newAuthorDTO, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return this.authorService.save(newAuthorDTO);
     }
 
     @GetMapping("/{id}")
@@ -32,7 +39,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public Author findByIdAndUpdate(@PathVariable int id, @RequestBody Author updatedAuthor) {
+    public Author findByIdAndUpdate(@PathVariable int id, @RequestBody NewAuthorDTO updatedAuthor) {
         return this.authorService.findByIdAndUpdate(id, updatedAuthor);
     }
 

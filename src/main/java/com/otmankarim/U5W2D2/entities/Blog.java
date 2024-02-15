@@ -24,10 +24,10 @@ public class Blog {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    public Blog(String category, String title, String cover, String content, int timeOfLecture) {
+    public Blog(String category, String title, String content, int timeOfLecture) {
         this.category = category;
         this.title = title;
-        this.cover = cover;
+        this.cover = "https://picsum.photos/200/300";
         this.content = content;
         this.timeOfLecture = timeOfLecture;
     }

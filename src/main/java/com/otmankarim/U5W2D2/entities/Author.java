@@ -23,11 +23,10 @@ public class Author {
     private LocalDate dateOfBirth;
     private String avatar;
 
-    public Author(String name, String surname, String email, LocalDate dateOfBirth, String avatar) {
+    public Author(String name, String surname, String email, LocalDate dateOfBirth) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
-        this.avatar = avatar;
     }
 }
