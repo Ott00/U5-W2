@@ -39,7 +39,10 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public Author findByIdAndUpdate(@PathVariable int id, @RequestBody NewAuthorDTO updatedAuthor) {
+    public Author findByIdAndUpdate(@PathVariable int id, @RequestBody @Validated NewAuthorDTO updatedAuthor, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
         return this.authorService.findByIdAndUpdate(id, updatedAuthor);
     }
 

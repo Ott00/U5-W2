@@ -49,7 +49,10 @@ public class BlogController {
     }
 
     @PutMapping("/{id}")
-    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody NewBlogDTO updatedBlog) {
+    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody @Validated NewBlogDTO updatedBlog, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
         return this.blogService.findByIdAndUpdate(id, updatedBlog);
     }
 
