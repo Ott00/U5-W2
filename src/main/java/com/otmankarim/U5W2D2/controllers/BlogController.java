@@ -1,12 +1,18 @@
 package com.otmankarim.U5W2D2.controllers;
 
 import com.otmankarim.U5W2D2.entities.Blog;
-import com.otmankarim.U5W2D2.payloads.BlogPayload;
+import com.otmankarim.U5W2D2.exceptions.BadRequestException;
+import com.otmankarim.U5W2D2.payloads.NewBlogDTO;
 import com.otmankarim.U5W2D2.services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/blogs")
@@ -23,8 +29,18 @@ public class BlogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Status Code 201
-    public Blog save(@RequestBody BlogPayload blogPayload) {
-        return this.blogService.save(blogPayload);
+    public Blog save(@RequestBody @Validated NewBlogDTO newBlogDTO, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return this.blogService.save(newBlogDTO);
+    }
+
+    //Aggiorniamo l'immagine con questo endpoint
+    @PatchMapping("/{id}/uploadCover")
+    @ResponseStatus(HttpStatus.OK) // Status Code 200
+    public String uploadCover(@PathVariable int id, @RequestParam("cover") MultipartFile image) throws IOException {
+        return this.blogService.uploadImageAndGetUrl(image, id);
     }
 
     @GetMapping("/{id}")
@@ -33,7 +49,7 @@ public class BlogController {
     }
 
     @PutMapping("/{id}")
-    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody BlogPayload updatedBlog) {
+    public Blog findByIdAndUpdate(@PathVariable int id, @RequestBody NewBlogDTO updatedBlog) {
         return this.blogService.findByIdAndUpdate(id, updatedBlog);
     }
 
