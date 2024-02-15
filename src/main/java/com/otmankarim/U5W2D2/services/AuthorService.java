@@ -1,5 +1,7 @@
 package com.otmankarim.U5W2D2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.otmankarim.U5W2D2.entities.Author;
 import com.otmankarim.U5W2D2.exceptions.BadRequestException;
 import com.otmankarim.U5W2D2.exceptions.NotFoundException;
@@ -11,11 +13,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class AuthorService {
     @Autowired
     private AuthorDAO authorDAO;
+
+    @Autowired
+    private Cloudinary cloudinaryUploader;
 
     public Page<Author> getAuthors(int pageNumber, int size, String orderBy) {
         if (size > 100) size = 100;
@@ -57,5 +65,13 @@ public class AuthorService {
 
     public String createAvatarUrl(NewAuthorDTO author) {
         return "https://ui-avatars.com/api/?name=" + author.name() + "+" + author.surname();
+    }
+
+    public String uploadImageAndGetUrl(MultipartFile cover, int authorId) throws IOException {
+        String urlCover = (String) cloudinaryUploader.uploader().upload(cover.getBytes(), ObjectUtils.emptyMap()).get("url");
+        Author found = findById(authorId);
+        found.setAvatar(urlCover);
+        authorDAO.save(found);
+        return urlCover;
     }
 }

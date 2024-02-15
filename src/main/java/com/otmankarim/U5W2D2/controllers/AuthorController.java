@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/authors")
@@ -31,6 +34,13 @@ public class AuthorController {
             throw new BadRequestException(validation.getAllErrors());
         }
         return this.authorService.save(newAuthorDTO);
+    }
+
+    //Aggiorniamo l'immagine con questo endpoint
+    @PatchMapping("/{id}/uploadAvatar")
+    @ResponseStatus(HttpStatus.OK) // Status Code 200
+    public String uploadCover(@PathVariable int id, @RequestParam("avatar") MultipartFile image) throws IOException {
+        return this.authorService.uploadImageAndGetUrl(image, id);
     }
 
     @GetMapping("/{id}")
